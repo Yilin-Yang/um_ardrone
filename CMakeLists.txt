@@ -4,6 +4,8 @@ project(um_ardrone)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++17)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -118,8 +120,10 @@ include_directories(SYSTEM
 
 # For now, contains all source files save for the driver executable
 add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}/rebroadcaster.cpp
-  src/${PROJECT_NAME}/templated_rebroadcaster.cpp
+  src/ardrone_to_hector.cpp
+  src/navdata_altitude_rebroadcaster.cpp
+  src/rebroadcaster.cpp
+  src/templated_rebroadcaster.cpp
 )
 
 ## Add cmake target dependencies of the library
