@@ -24,23 +24,26 @@
 #define UM_ARDRONE_TEMPLATED_REBROADCASTER_H
 
 #include "rebroadcaster.h"
+#include <stdexcept>
 #include <string>
+#include <typeinfo>
 
 namespace um_ardrone
 {
-
 /**
- * @brief Primary implementation of Rebroadcaster. Templated on message type.
+ * @brief Primary implementation of Rebroadcaster. Templated on two message types.
  * @author Yilin Yang (yiliny@umich.edu)
- * @tparam MsgType  The message type to be rebroadcasted, e.g. `std_msgs::String`.
- * @details This exists as a separate data type so that
+ * @tparam MsgTypeSub The message type to be received, e.g. `std_msgs::String`.
+ * @tparam MsgTypePub The (potentially different) message type to be rebroadcast.
+ * @details This exists as a separate data type so that multiple Rebroadcasters
+ *    can be stored in a templated container.
  */
-template <typename MsgType>
+template <typename MsgTypeSub, typename MsgTypePub = MsgTypeSub>
 class TemplatedRebroadcaster : public Rebroadcaster
 {
 public:
 
-  typedef ros::MessageEvent<const MsgType> MsgTypeEvent;
+  typedef ros::MessageEvent<const MsgTypeSub> MsgTypeSubEvent;
 
   TemplatedRebroadcaster() = default;
 
@@ -63,12 +66,19 @@ public:
   /**
    * @brief Callback function that receives messages.
    */
-  virtual void receiveMessage(const MsgTypeEvent&);
+  virtual void receiveMessage(const MsgTypeSubEvent&);
 
   /**
    * @brief Broadcasts the given message onto `published_topic`.
    */
-  virtual void rebroadcastMessage(const typename MsgType::ConstPtr&);
+  virtual void rebroadcastMessage(const typename MsgTypePub::ConstPtr&);
+
+  /**
+   * @brief Convert between the two message types.
+   */
+  virtual typename MsgTypePub::ConstPtr convertSubToPub(
+    const typename MsgTypeSub::ConstPtr&
+  ) const;
 
 private:
 
@@ -80,8 +90,8 @@ private:
 
 }; // class TemplatedRebroadcaster
 
-template <typename MsgType>
-TemplatedRebroadcaster<MsgType>::TemplatedRebroadcaster(
+template <typename MsgTypeSub, typename MsgTypePub>
+TemplatedRebroadcaster<MsgTypeSub, MsgTypePub>::TemplatedRebroadcaster(
   const std::string& subscribed_topic,
   const std::string& published_topic,
   size_t max_sub_queue_size,
@@ -92,12 +102,12 @@ TemplatedRebroadcaster<MsgType>::TemplatedRebroadcaster(
     node_handle.subscribe(
       subscribed_topic,
       max_sub_queue_size,
-      &TemplatedRebroadcaster<MsgType>::receiveMessage,
+      &TemplatedRebroadcaster<MsgTypeSub, MsgTypePub>::receiveMessage,
       this
     )
   },
   publisher{
-    node_handle.advertise<MsgType>(
+    node_handle.advertise<MsgTypePub>(
       published_topic,
       max_pub_queue_size
     )
@@ -105,20 +115,47 @@ TemplatedRebroadcaster<MsgType>::TemplatedRebroadcaster(
 {
 }
 
-template <typename MsgType>
-void TemplatedRebroadcaster<MsgType>::receiveMessage(
-  const MsgTypeEvent& msg_event
+template <typename MsgTypeSub, typename MsgTypePub>
+void TemplatedRebroadcaster<MsgTypeSub, MsgTypePub>::receiveMessage(
+  const MsgTypeSubEvent& msg_event
 )
 {
-  rebroadcastMessage(msg_event.getMessage());
+  if constexpr (std::is_same<MsgTypeSub, MsgTypePub>::value)
+  {
+    rebroadcastMessage(msg_event.getMessage());
+  }
+  else
+  {
+    auto to_publish{
+      convertSubToPub(msg_event.getMessage())
+    };
+    rebroadcastMessage(to_publish);
+  }
 }
 
-template <typename MsgType>
-void TemplatedRebroadcaster<MsgType>::rebroadcastMessage(
-  const typename MsgType::ConstPtr& msg
+template <typename MsgTypeSub, typename MsgTypePub>
+void TemplatedRebroadcaster<MsgTypeSub, MsgTypePub>::rebroadcastMessage(
+  const typename MsgTypePub::ConstPtr& msg
 )
 {
   publisher.publish(msg);
+}
+
+template <typename MsgTypeSub, typename MsgTypePub>
+typename MsgTypePub::ConstPtr
+TemplatedRebroadcaster<MsgTypeSub, MsgTypePub>::convertSubToPub(
+  const typename MsgTypeSub::ConstPtr&
+) const
+{
+  throw std::logic_error{
+    std::string{
+      "(um_ardrone) Tried to use a type-converting "
+      "TemplatedRebroadcaster without overriding its convertSubToPub function! "
+      "(Did not define a conversion between "
+    } + typeid(MsgTypeSub).name()
+    + std::string{" and "} + typeid(MsgTypePub).name() + std::string{"!)"}
+  };
+  return typename MsgTypePub::ConstPtr{}; // silence compiler error
 }
 
 } // namespace um_ardrone
