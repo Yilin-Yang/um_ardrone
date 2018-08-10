@@ -10,7 +10,7 @@ add_compile_options(-std=c++17)
 find_package(catkin REQUIRED COMPONENTS
   ardrone_autonomy
   geometry_msgs
-  hector_localization
+  #  hector_localization
   roscpp
   sensor_msgs
 )
@@ -116,10 +116,11 @@ include_directories(SYSTEM
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/um_ardrone.cpp
-# )
+# For now, contains all source files save for the driver executable
+add_library(${PROJECT_NAME}
+  src/${PROJECT_NAME}/rebroadcaster.cpp
+  src/${PROJECT_NAME}/templated_rebroadcaster.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
