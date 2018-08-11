@@ -1,17 +1,23 @@
 <launch>
   <node name="um_ardrone" pkg="um_ardrone" type="um_ardrone">
     <param name="broadcast_imu" value="True" />
-    <param name="broadcast_mag" value="True" />
+    <!-- tum_simulator does not have working magnetometer sensor -->
+    <param name="broadcast_mag" value="False" />
     <param name="broadcast_altitude" value="True" />
   </node>
 
   <!-- hector_localization/hector_pose_estimation -->
   <node pkg="hector_pose_estimation" type="pose_estimation" name="hector_pose_estimation" />
   <node pkg="rviz" type="rviz" name="hector_pose_estimation_rviz"
-    args="-d $(find hector_pose_estimation)/rviz_cfg/hector_pose_estimation.rviz" />
-    <!-- args="-d $(find um_ardrone)/rviz_cfg/ardrone_hector.rviz" /> -->
+    args="-d $(find um_ardrone)/rviz_cfg/ardrone_hector.rviz" />
+    <!-- args="-d $(find hector_pose_estimation)/rviz_cfg/hector_pose_estimation.rviz" /> -->
 
   <!-- tum_simulator/cvg_sim_gazebo/ardrone_testworld.launch -->
+
+  <!-- mark 'nav' (tum/hector root frame) as the parent of tf frame 'map' (default root frame) -->
+  <!-- NOTE: x, y, z, R, P, Y transform FROM parent TO child, period in ms -->
+  <node pkg="tf" type="static_transform_publisher" name="tf_nav_map_static_publisher"
+    args="0 0 0 0 0 0 nav map 100" />
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
