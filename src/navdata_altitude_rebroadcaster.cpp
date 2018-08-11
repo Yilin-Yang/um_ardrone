@@ -37,9 +37,9 @@ PointStamped::ConstPtr NavdataAltitudeRebroadcaster::convertSubToPub(
   altitude_msg->point.x = 0;
   altitude_msg->point.y = 0;
 
-  // `altd` is given in cm, according to Navdata message specification
-  // (ardrone_autonomy's docs appear to have a typo)
-  altitude_msg->point.z = static_cast<double>(received.altd) / 100.0;
+  // `altd` is given in mm
+  // (message specification appears to have a typo)
+  altitude_msg->point.z = static_cast<double>(received.altd) / 1000.0;
 
   return altitude_msg;
 }
