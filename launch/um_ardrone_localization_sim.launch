@@ -1,0 +1,27 @@
+<launch>
+  <node name="um_ardrone" pkg="um_ardrone" type="um_ardrone">
+    <param name="broadcast_imu" value="True" />
+    <param name="broadcast_mag" value="True" />
+    <param name="broadcast_altitude" value="True" />
+  </node>
+
+  <!-- hector_localization/hector_pose_estimation -->
+  <node pkg="hector_pose_estimation" type="pose_estimation" name="hector_pose_estimation" />
+  <node pkg="rviz" type="rviz" name="hector_pose_estimation_rviz"
+    args="-d $(find hector_pose_estimation)/rviz_cfg/hector_pose_estimation.rviz" />
+    <!-- args="-d $(find um_ardrone)/rviz_cfg/ardrone_hector.rviz" /> -->
+
+  <!-- tum_simulator/cvg_sim_gazebo/ardrone_testworld.launch -->
+
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name"
+      value="$(find cvg_sim_gazebo)/worlds/ardrone_testworld.world"/>
+  </include>
+  <!-- Spawn simulated quadrotor uav -->
+  <include file="$(find cvg_sim_gazebo)/launch/spawn_quadrotor.launch" >
+    <arg name="model"
+      value="$(find cvg_sim_gazebo)/urdf/quadrotor_sensors.urdf.xacro"/>
+  </include>
+</launch>
+

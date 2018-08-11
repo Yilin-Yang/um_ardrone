@@ -1,0 +1,7 @@
+<launch>
+  <node name="um_ardrone" pkg="um_ardrone" type="um_ardrone">
+    <param name="broadcast_imu" value="True" />
+    <param name="broadcast_mag" value="True" />
+    <param name="broadcast_altitude" value="True" />
+  </node>
+</launch>
