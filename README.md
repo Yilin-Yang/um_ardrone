@@ -45,3 +45,21 @@ other; it will almost certainly fail to compile in another ROS distribution, at
 least without substantial legwork.
 
 **TODO**
+
+Common Issues
+--------------------------------------------------------------------------------
+
+> Gazebo loads a black screen when I try to start the simulation!
+
+This often happens when a previous Gazebo instance did not exit properly. (When
+closing a simulator instance, hit Ctrl-C, and then _wait_ for the process to die
+gracefully. This may take several seconds.) Use the Ubuntu System Monitor (or
+`ps aux | grep gazebo` in conjunction with `kill -s 9 <PID>`) to kill any
+lingering Gazebo processes.
+
+> `roscore` complains about an existing ROS master, even though I've killed the
+> old one.
+
+Try killing/restarting `roscore`. Find the process ID of `rosmaster` with `ps
+aux | grep rosmaster`, then run `kill -s 9 <PID>` where `<PID>` is the leftmost
+number in the output from `ps`.
