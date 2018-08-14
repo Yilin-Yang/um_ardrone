@@ -1,0 +1,37 @@
+# Configuration file for the `map_frame` EKF node. In addition to continuous
+# sensor/odometric data, *also* fuses global positional data (e.g.
+# landmarks, GPS, etc.)
+#
+# Shall be loaded _after_ `odom_ekf_config.yaml`; therefore, parameters set in
+# this file will override parameters set in `odom_ekf_config.yaml`.
+#
+# See `odom_ekf_config.yaml` for additional documentation on parameters.
+
+# ...The order of the values is...
+#             [x,     y,     z,
+#              roll,  pitch, yaw,
+#              vx,    vy,    vz,
+#              vroll, vpitch,vyaw,
+#              ax,    ay,    az]
+
+# world_frame is now the *map* frame
+map_frame: um_map
+world_frame: um_map
+
+# published by [tum_ardrone] drone_stateestimation
+# TODO: rebroadcast predictedPose as geometry_msgs/PoseWithCovarianceStamped
+pose0: ardrone/predictedPose  # tum_ardrone EKF output, including fused PTAM
+
+# NOTE: values are extracted from tum_ardrone/msg/filter_state.msg
+pose0_config: [true,  true,  true,  # absolute position
+               true,  true,  true,  # absolute orientation
+               true,  true,  true,  # velocities
+               false, false, true,  # filter_state.msg only reports yaw-dot
+               false, false, false] # does not report accelerations
+pose0_differential: false
+pose0_relative: false
+pose0_queue_size: 2
+# pose0_rejection_threshold: 2  # Note the difference in parameter name
+pose0_nodelay: false
+
+# TODO: add Kinect + RTABMAP state information
