@@ -25,19 +25,17 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>ardrone_autonomy</build_depend>
   <build_depend>geometry_msgs</build_depend>
-  <!-- <build_depend>hector_localization</build_depend> -->
   <build_depend>roscpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_export_depend>ardrone_autonomy</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
-  <!-- <build_export_depend>hector_localization</build_export_depend> -->
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>sensor_msgs</build_export_depend>
   <exec_depend>ardrone_autonomy</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
-  <!-- <exec_depend>hector_localization</exec_depend> -->
   <exec_depend>roscpp</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>robot_localization</exec_depend>
   <doc_depend>doxygen</doc_depend>
   <!--   <test_depend>gtest</test_depend> -->
 

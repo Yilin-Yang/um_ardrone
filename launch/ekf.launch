@@ -1,0 +1,5 @@
+<launch>
+  <node name="global_ekf" pkg="robot_localization" type="ekf_localization_node">
+    <rosparam command="load" file="$(find um_ardrone)/params/ekf_config.yaml" />
+  </node>
+</launch>
