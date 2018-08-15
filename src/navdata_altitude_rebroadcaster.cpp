@@ -45,12 +45,12 @@ PoseWithCovarianceStamped::ConstPtr NavdataAltitudeRebroadcaster::convertSubToPu
   altitude_pose_point.z = static_cast<double>(received.altd) / 1000.0;
   altitude_msg->pose.covariance =
     boost::array<double, 36>{
-      0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0,
+      1, 0, 0, 0, 0, 0,
+      0, 1, 0, 0, 0, 0,
+      0, 0, 1, 0, 0, 0,
+      0, 0, 0, 1, 0, 0,
+      0, 0, 0, 0, 1, 0,
+      0, 0, 0, 0, 0, 1,
     };
 
   return altitude_msg;
