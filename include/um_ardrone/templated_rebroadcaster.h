@@ -78,7 +78,7 @@ public:
    */
   virtual typename MsgTypePub::ConstPtr convertSubToPub(
     const typename MsgTypeSub::ConstPtr&
-  ) const;
+  );
 
 private:
 
@@ -145,7 +145,7 @@ template <typename MsgTypeSub, typename MsgTypePub>
 typename MsgTypePub::ConstPtr
 TemplatedRebroadcaster<MsgTypeSub, MsgTypePub>::convertSubToPub(
   const typename MsgTypeSub::ConstPtr&
-) const
+)
 {
   throw std::logic_error{
     std::string{

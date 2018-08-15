@@ -20,13 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef UM_ARDRONE_NAVDATA_ALTITUDE_REBROADCASTER_H
-#define UM_ARDRONE_NAVDATA_ALTITUDE_REBROADCASTER_H
+#ifndef UM_ARDRONE_MAG_IMU_REBROADCASTER_H
+#define UM_ARDRONE_MAG_IMU_REBROADCASTER_H
 
-#include <ros/ros.h>
+#include <geometry_msgs/Vector3Stamped.h>
+#include <sensor_msgs/Imu.h>
 
-#include <ardrone_autonomy/Navdata.h>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <tf2/LinearMath/Quaternion.h>
 
 #include "templated_rebroadcaster.h"
 
@@ -34,21 +34,21 @@ namespace um_ardrone
 {
 
 /**
- * @brief Extract SONAR from `Navdata`, republish as `PoseWithCovarianceStamped`.
+ * @brief Republish magnetometer vectors as IMU messages.
  * @author Yilin Yang (yiliny@umich.edu)
  * @details See @ref TemplatedRebroadcaster for details on function parameters.
  */
-class NavdataAltitudeRebroadcaster
+class MagImuRebroadcaster
 : public TemplatedRebroadcaster<
-    ardrone_autonomy::Navdata,
-    geometry_msgs::PoseWithCovarianceStamped
+    geometry_msgs::Vector3Stamped,
+    sensor_msgs::Imu
   >
 {
 public:
 
-  NavdataAltitudeRebroadcaster() = default;
+  MagImuRebroadcaster() = default;
 
-  explicit NavdataAltitudeRebroadcaster(
+  explicit MagImuRebroadcaster(
     const std::string& subscribed_topic,
     const std::string& published_topic,
     const std::string& tf_frame_id,
@@ -57,23 +57,48 @@ public:
   );
 
   /**
-   * @brief Return a pose message containing z-height.
+   * @brief Return an IMU message with orientation data and angular rates.
    * @details The values of all other fields in the pose message (aside from
    *    the header) are unspecified.
    */
-  virtual geometry_msgs::PoseWithCovarianceStamped::ConstPtr convertSubToPub(
-    const ardrone_autonomy::Navdata::ConstPtr&
+  virtual sensor_msgs::Imu::ConstPtr convertSubToPub(
+    const geometry_msgs::Vector3Stamped::ConstPtr&
   ) override;
+
+  /**
+   * @return A "default-initialized" Imu message: identity orientation,
+   *    zero-vector angular velocity and linear acceleration, zeroed covariance
+   *    matrices.
+   */
+  static sensor_msgs::Imu::Ptr defaultImuMessage();
+
+  /**
+   * @return A quaternion rotation from the `from` vector to the `to` vector.
+   */
+  static geometry_msgs::Quaternion transformFrom(
+    const geometry_msgs::Vector3Stamped::ConstPtr& from,
+    const geometry_msgs::Vector3Stamped::ConstPtr& to
+  );
 
 private:
 
   /**
-   * @brief The `tf` frame in which altitude measurements are to be reported.
+   * @brief The `tf` frame in which magnetometer values are to be reported.
    */
   std::string tf_frame_id;
 
-}; // class NavdataAltitudeRebroadcaster
+  /**
+   * @brief The magnetic heading on first initialization. Assumed to be "level".
+   */
+  geometry_msgs::Vector3Stamped::ConstPtr initial_mag;
+
+  /**
+   * @brief The last magnetic heading received.
+   */
+  geometry_msgs::Vector3Stamped::ConstPtr last_mag;
+
+}; // class MagImuRebroadcaster
 
 } // namespace um_ardrone
 
-#endif // UM_ARDRONE_NAVDATA_ALTITUDE_REBROADCASTER_H
+#endif // UM_ARDRONE_MAG_IMU_REBROADCASTER_H

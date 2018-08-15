@@ -1,6 +1,6 @@
 #include <ros/ros.h>
-#include "um_ardrone/ardrone_to_hector.h"
-  using um_ardrone::ARDroneToHector;
+#include "um_ardrone/ardrone_to_robot_localization.h"
+  using um_ardrone::ARDroneToRobotLocalization;
 
 #include <string>
   using std::string;
@@ -13,25 +13,30 @@ int main(int argc, char** argv)
   ROS_INFO("Initializing um_ardrone node.");
   ROS_INFO("Loading parameters...");
 
-  bool broadcast_imu      = true;
   bool broadcast_mag      = true;
   bool broadcast_altitude = true;
+  bool broadcast_tum_ekf  = true;
 
-  node_handle.getParam("broadcast_imu",      broadcast_imu);
+  string map_tf_frame_id       = "um_map";
+  string odom_tf_frame_id      = "um_odom";
+  string base_link_tf_frame_id = "um_base_link";
+
   node_handle.getParam("broadcast_mag",      broadcast_mag);
   node_handle.getParam("broadcast_altitude", broadcast_altitude);
+  node_handle.getParam("broadcast_tum_ekf",  broadcast_tum_ekf);
 
-  ROS_INFO("========================================");
-  ROS_INFO("Rebroadcasting:");
-  ROS_INFO("AR.Drone IMU readings: %i",             broadcast_imu);
-  ROS_INFO("AR.Drone magnetometer readings: %i",    broadcast_mag);
-  ROS_INFO("AR.Drone sonar altimeter readings: %i", broadcast_altitude);
+  node_handle.getParam("map_tf_frame_id",       map_tf_frame_id);
+  node_handle.getParam("odom_tf_frame_id",      odom_tf_frame_id);
+  node_handle.getParam("base_link_tf_frame_id", base_link_tf_frame_id);
 
   // rebroadcast all AR.Drone messages
-  ARDroneToHector rebroadcaster{
-    broadcast_imu,
+  ARDroneToRobotLocalization rebroadcaster{
+    map_tf_frame_id,
+    odom_tf_frame_id,
+    base_link_tf_frame_id,
+    broadcast_altitude,
     broadcast_mag,
-    broadcast_altitude
+    broadcast_tum_ekf
   };
 
   // if i

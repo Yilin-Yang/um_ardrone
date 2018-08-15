@@ -15,7 +15,11 @@ find_package(catkin REQUIRED COMPONENTS
   #  hector_localization
   roscpp
   sensor_msgs
+  tf2
+  tum_ardrone
 )
+
+find_package(Eigen3 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -116,15 +120,10 @@ catkin_package(
 include_directories(include)
 include_directories(SYSTEM
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
-# For now, contains all source files save for the driver executable
-add_library(lib${PROJECT_NAME}
-  src/ardrone_to_hector.cpp
-  src/navdata_altitude_rebroadcaster.cpp
-  src/rebroadcaster.cpp
-  src/templated_rebroadcaster.cpp
-)
+add_subdirectory(src)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
