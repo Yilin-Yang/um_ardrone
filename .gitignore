@@ -34,3 +34,5 @@
 # Build Output
 build/*
 compile_commands.json
+cmake/*
+*.log
