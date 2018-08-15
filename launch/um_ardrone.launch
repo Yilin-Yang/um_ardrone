@@ -1,5 +1,5 @@
 <launch>
-  <node name="um_ardrone" pkg="um_ardrone" type="um_ardrone">
+  <node name="um_ardrone" pkg="um_ardrone" type="um_ardrone" output="screen">
     <param name="broadcast_altitude" value="True" />
     <param name="broadcast_mag" value="True" />
     <param name="broadcast_tum_ekf" value="True" />
