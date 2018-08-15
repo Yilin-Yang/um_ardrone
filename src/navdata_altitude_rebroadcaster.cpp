@@ -22,6 +22,7 @@ NavdataAltitudeRebroadcaster::NavdataAltitudeRebroadcaster(
   ),
   tf_frame_id{tf_frame_id_in}
 {
+  ROS_INFO("NavdataAltitudeRebroadcaster tf_frame: %s", tf_frame_id.c_str());
 }
 
 PoseWithCovarianceStamped::ConstPtr NavdataAltitudeRebroadcaster::convertSubToPub(

@@ -113,6 +113,8 @@ TemplatedRebroadcaster<MsgTypeSub, MsgTypePub>::TemplatedRebroadcaster(
     )
   }
 {
+  ROS_INFO("Subscribing to topic: %s", subscribed_topic.c_str());
+  ROS_INFO("Advertising topic: %s", published_topic.c_str());
 }
 
 template <typename MsgTypeSub, typename MsgTypePub>

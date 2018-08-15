@@ -31,6 +31,7 @@ MagImuRebroadcaster::MagImuRebroadcaster(
   initial_mag{nullptr},
   last_mag{nullptr}
 {
+  ROS_INFO("MagImuRebroadcaster tf_frame: %s", tf_frame_id.c_str());
 }
 
 Imu::Ptr MagImuRebroadcaster::defaultImuMessage()

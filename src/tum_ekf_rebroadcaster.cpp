@@ -36,6 +36,8 @@ TumEkfRebroadcaster::TumEkfRebroadcaster(
   world_tf_frame_id{world_tf_frame_id_in},
   local_tf_frame_id{local_tf_frame_id_in}
 {
+  ROS_INFO("TumEkfRebroadcaster world_tf_frame: %s", world_tf_frame_id.c_str());
+  ROS_INFO("TumEkfRebroadcaster local_tf_frame: %s", local_tf_frame_id.c_str());
 }
 
 void TumEkfRebroadcaster::setPose(
