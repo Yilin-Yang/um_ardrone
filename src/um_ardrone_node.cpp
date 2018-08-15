@@ -8,7 +8,7 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "um_ardrone");
-  ros::NodeHandle node_handle;
+  ros::NodeHandle node_handle{"~"};
 
   ROS_INFO("Initializing um_ardrone node.");
   ROS_INFO("Loading parameters...");
