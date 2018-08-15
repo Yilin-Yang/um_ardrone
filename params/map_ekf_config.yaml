@@ -20,18 +20,16 @@ world_frame: um_map
 
 # published by [tum_ardrone] drone_stateestimation
 # TODO: rebroadcast predictedPose as geometry_msgs/PoseWithCovarianceStamped
-pose0: ardrone/predictedPose  # tum_ardrone EKF output, including fused PTAM
+odom1: um/tum_ekf  # tum_ardrone EKF output, including fused PTAM
 
 # NOTE: values are extracted from tum_ardrone/msg/filter_state.msg
-pose0_config: [true,  true,  true,  # absolute position
+odom1_config: [true,  true,  true,  # absolute position
                true,  true,  true,  # absolute orientation
                true,  true,  true,  # velocities
-               false, false, true,  # filter_state.msg only reports yaw-dot
-               false, false, false] # does not report accelerations
-pose0_differential: false
-pose0_relative: false
-pose0_queue_size: 2
-# pose0_rejection_threshold: 2  # Note the difference in parameter name
-pose0_nodelay: false
-
-# TODO: add Kinect + RTABMAP state information
+               false, false, true,  # only reports yaw-dot
+               false, false, false] # doesn't report accelerations
+odom1_differential: true
+odom1_relative: false
+odom1_queue_size: 2
+odom1_rejection_threshold: 2
+odom1_nodelay: false

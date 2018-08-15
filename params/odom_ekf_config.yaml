@@ -120,7 +120,7 @@ world_frame: um_odom           # Defaults to the value of odom_frame if unspecif
 # published by ardrone_autonomy
 imu0: ardrone/imu        # AR.Drone's built-in IMU
 imu1: um/mag_pose_orientation  # magnetometer, converted to an IMU message (orientation, gyro)
-imu2: um/altitude_pose   # SONAR altimeter, converted to an IMU message (z and z-dot)
+pose0: um/altitude_pose  # SONAR altimeter, converted to an IMU message (z and z-dot)
 odom0: ardrone/odometry  # optical flow from built-in bottom-facing camera
 
 # Each sensor reading updates some or all of the filter's state. These options
@@ -152,6 +152,7 @@ odom0: ardrone/odometry  # optical flow from built-in bottom-facing camera
 #              vroll, vpitch,vyaw,
 #              ax,    ay,    az]
 
+# AR.Drone IMU
 imu0_config:  [false, false, false,  # no absolute pos
                true,  true,  true,   # use absolute orientation (from accelerometer)
                false, false, false,  # no linear velocity
@@ -166,14 +167,7 @@ imu0_nodelay: false
 # NOTE: additional imu0 options are set further below
 
 
-odom0_config: [true,  true,  false,
-               false, false, false,
-               false, false, false,
-               false, false, true,
-               false, false, false]
-# NOTE: additional odom0 options are set further below
-
-
+# AR.Drone magnetometer
 imu1_config: [false, false, false,  # no position data
               true,  true,  true,   # orientation data
               false, false, false,  # no linear velocity data
@@ -182,22 +176,33 @@ imu1_config: [false, false, false,  # no position data
 imu1_differential: true  # convert orientation to ang. rates before fusing
 imu1_relative: true  # probably unnecessary, but might be helpful
 imu1_queue_size: 4  # magnetometer can publish at ~130Hz
-# imu1_pose_rejection_threshold: 2
-# imu1_twist_rejection_threshold: 0.2
+# pose0_pose_rejection_threshold: 2
+# pose0_twist_rejection_threshold: 0.2
 imu1_nodelay: false
 
 
-imu2_config: [false, false, true,   # literally only altitude
+# AR.Drone sonar altimeter
+pose0_config: [false, false, true,   # literally only altitude
               false, false, false,
-              false, false, true,   # ...and rate of ascent/descent.
+              false, false, false,
               false, false, false,
               false, false, false]
-imu2_differential: false
-imu2_relative: false  # '0' from the altimeter means we're landed; don't override that
-imu2_queue_size: 3  # assume publish rate of ~100Hz
-imu2_pose_rejection_threshold: 2  # altimeter sometimes erroneously reports height of 0m
-imu2_twist_rejection_threshold: 0.2
-imu2_nodelay: false
+pose0_differential: false
+pose0_relative: false  # '0' from the altimeter means we're landed; don't override that
+pose0_queue_size: 3  # assume publish rate of ~100Hz
+pose0_pose_rejection_threshold: 2  # altimeter sometimes erroneously reports height of 0m
+pose0_twist_rejection_threshold: 0.2
+pose0_nodelay: false
+
+
+# AR.Drone bottom-facing optical flow camera
+odom0_config: [true,  true,  false,
+               false, false, false,
+               false, false, false,
+               false, false, true,
+               false, false, false]
+# NOTE: additional odom0 options are set further below
+
 
 # If you have high-frequency data or are running with a low frequency parameter
 # value, then you may want to increase the size of the subscription queue so
