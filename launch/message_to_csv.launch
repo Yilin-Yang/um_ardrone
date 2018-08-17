@@ -1,0 +1,8 @@
+<launch>
+  <node name="message_to_csv" pkg="um_ardrone" type="message_to_csv" output="screen">
+    <param name="log_imu" value="True" />
+    <param name="imu_format" value="CSV" />
+    <param name="imu_topic" value="/ardrone/imu" />
+    <param name="imu_print_to_outfile" value="/home/yiliny/Desktop/imu.csv" />
+  </node>
+</launch>

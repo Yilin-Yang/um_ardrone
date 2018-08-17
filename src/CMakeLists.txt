@@ -1,7 +1,10 @@
 add_library(lib${PROJECT_NAME}
   ardrone_to_robot_localization.cpp
+  imu_printer.cpp
   mag_imu_rebroadcaster.cpp
+  message_printer.cpp
   navdata_altitude_rebroadcaster.cpp
+  odometry_printer.cpp
   rebroadcaster.cpp
   templated_rebroadcaster.cpp
   tum_ekf_rebroadcaster.cpp

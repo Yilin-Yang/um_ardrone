@@ -134,6 +134,7 @@ add_subdirectory(src)
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME} src/um_ardrone_node.cpp)
+add_executable(message_to_csv  src/message_to_csv_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -147,6 +148,11 @@ add_executable(${PROJECT_NAME} src/um_ardrone_node.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
+  lib${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(message_to_csv
   lib${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
