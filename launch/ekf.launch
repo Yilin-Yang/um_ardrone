@@ -2,7 +2,8 @@
 <!-- see: https://answers.ros.org/question/199608/ -->
 <launch>
   <node name="local_ekf" pkg="robot_localization" type="ekf_localization_node">
-    <rosparam command="load" file="$(find um_ardrone)/params/odom_ekf_config.yaml" />
+    <!-- <rosparam command="load" file="$(find um_ardrone)/params/odom_ekf_config.yaml" /> -->
+    <rosparam command="load" file="$(find um_ardrone)/params/minimal_ekf.yaml" />
   </node>
   <!-- <node name="global_ekf" pkg="robot_localization" type="ekf_localization_node"> -->
   <!--   <rosparam command="load" file="$(find um_ardrone)/params/odom_ekf_config.yaml" /> -->
