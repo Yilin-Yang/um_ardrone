@@ -24,7 +24,6 @@
 #define UM_ARDRONE_ARDRONE_TO_ROBOT_LOCALIZATION_H
 
 #include "tum_ekf_rebroadcaster.h"
-#include "mag_imu_rebroadcaster.h"
 #include "navdata_altitude_rebroadcaster.h"
 
 #include <memory>

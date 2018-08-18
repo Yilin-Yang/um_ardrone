@@ -28,13 +28,13 @@ ARDroneToRobotLocalization::ARDroneToRobotLocalization(
 {
   if (enable_mag)
   {
-    rebroadcasters.emplace_back(
-      make_unique<MagImuRebroadcaster>(
-        ARDRONE_MAG_TOPIC,
-        UM_MAG_TOPIC,
-        base_link_tf_frame_id
-      )
-    );
+    /* rebroadcasters.emplace_back( */
+    /*   make_unique<MagImuRebroadcaster>( */
+    /*     ARDRONE_MAG_TOPIC, */
+    /*     UM_MAG_TOPIC, */
+    /*     base_link_tf_frame_id */
+    /*   ) */
+    /* ); */
   }
   if (enable_altitude)
   {
