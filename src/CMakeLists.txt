@@ -6,6 +6,7 @@ add_library(lib${PROJECT_NAME}
   message_printer.cpp
   navdata_altitude_rebroadcaster.cpp
   odometry_printer.cpp
+  odometry_rebroadcaster.cpp
   rebroadcaster.cpp
   templated_rebroadcaster.cpp
   tum_ekf_rebroadcaster.cpp
