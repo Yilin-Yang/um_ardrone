@@ -4,6 +4,8 @@
   using std::ostream;
   using std::string;
 
+#include "um_ardrone/math.h"
+
 namespace um_ardrone
 {
 
@@ -23,7 +25,7 @@ ImuPrinter::ImuPrinter(
   switch (output_format)
   {
     case (OutputFormat::CSV):
-      output_stream << "sec, nsec, frame_id, w, x, y, z, dr, dp, dyaw, ax, ay, az\n";
+      output_stream << "sec, nsec, frame_id, r, p, yaw, dr, dp, dyaw, ax, ay, az\n";
     default:
       break;
   } // switch
@@ -36,6 +38,7 @@ ostream& ImuPrinter::printToStream_HUMAN_READABLE(
 {
   const std_msgs::Header& header = msg->header;
   const geometry_msgs::Quaternion& orientation      = msg->orientation;
+  const geometry_msgs::Vector3  roll_pitch_yaw      = quaternionToEuler(orientation);
   const geometry_msgs::Vector3& angular_velocity    = msg->angular_velocity;
   const geometry_msgs::Vector3& linear_acceleration = msg->linear_acceleration;
 
@@ -47,6 +50,9 @@ ostream& ImuPrinter::printToStream_HUMAN_READABLE(
             << "\nx:\t"        << orientation.x
             << "\ny:\t"        << orientation.y
             << "\nz:\t"        << orientation.z
+            << "\nr:\t"        << roll_pitch_yaw.x
+            << "\np:\t"        << roll_pitch_yaw.y
+            << "\nyaw:\t"      << roll_pitch_yaw.z
             << "\nd-r:\t"      << angular_velocity.x
             << "\nd-p:\t"      << angular_velocity.y
             << "\nd-yaw:\t"    << angular_velocity.z
@@ -62,16 +68,16 @@ ostream& ImuPrinter::printToStream_CSV(
 {
   const std_msgs::Header& header = msg->header;
   const geometry_msgs::Quaternion& orientation      = msg->orientation;
+  const geometry_msgs::Vector3  roll_pitch_yaw      = quaternionToEuler(orientation);
   const geometry_msgs::Vector3& angular_velocity    = msg->angular_velocity;
   const geometry_msgs::Vector3& linear_acceleration = msg->linear_acceleration;
 
   return os << header.stamp.sec      << ", "
             << header.stamp.nsec     << ", "
             << header.frame_id       << ", "
-            << orientation.w         << ", "
-            << orientation.x         << ", "
-            << orientation.y         << ", "
-            << orientation.z         << ", "
+            << roll_pitch_yaw.x      << ", "
+            << roll_pitch_yaw.y      << ", "
+            << roll_pitch_yaw.z      << ", "
             << angular_velocity.x    << ", "
             << angular_velocity.y    << ", "
             << angular_velocity.z    << ", "
