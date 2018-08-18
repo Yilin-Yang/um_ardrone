@@ -23,11 +23,43 @@
 #ifndef UM_ARDRONE_MATH_H
 #define UM_ARDRONE_MATH_H
 
+#include <ros/ros.h>
+
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 #include <cmath>
+
+namespace um_ardrone
+{
 
 static inline constexpr double degToRad(double deg)
 {
   return (deg / 180) * M_PI;
 }
+
+/**
+ * @return The roll, pitch, and yaw of the given quaternion about fixed world
+ *    axes in a `geometry_msgs::Vector` (where x is roll, y is pitch, and z is
+ *    yaw.)
+ */
+static inline geometry_msgs::Vector3
+  quaternionToEuler(const geometry_msgs::Quaternion& quat_msg)
+{
+  tf2::Quaternion quat;
+  tf2::fromMsg(quat_msg, quat);
+  tf2::Matrix3x3 mat{quat};
+
+  tf2Scalar roll, pitch, yaw;
+  mat.getRPY(yaw, pitch, roll);
+
+  geometry_msgs::Vector3 to_return;
+  to_return.x = roll;
+  to_return.y = pitch;
+  to_return.z = yaw;
+
+  return to_return;
+}
+
+} // namespace um_ardrone
 
 #endif // UM_ARDRONE_MATH_H
