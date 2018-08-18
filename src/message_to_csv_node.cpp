@@ -1,14 +1,16 @@
 #include <ros/ros.h>
 
+#include "um_ardrone/altitude_printer.h"
 #include "um_ardrone/imu_printer.h"
-  using std::string;
-  using std::ostream;
+#include "um_ardrone/odometry_printer.h"
   using std::cerr;
+  using std::ostream;
+  using std::string;
+  using um_ardrone::AltitudePrinter;
   using um_ardrone::ImuPrinter;
   using um_ardrone::MessagePrinter;
-
-#include "um_ardrone/odometry_printer.h"
   using um_ardrone::OdometryPrinter;
+
 
 #include <fstream>
   using std::ofstream;
@@ -112,9 +114,12 @@ int main(int argc, char** argv)
   ROS_INFO("Loading parameters.");
 
   vector<unique_ptr<MessagePrinter>> printers;
+
+  // NOTE: enable construction of new printer types by adding them here
   vector<shared_ptr<PrinterParams>> printer_params{
     make_shared< PrinterParamsTemplate<ImuPrinter> >     ("imu"),
     make_shared< PrinterParamsTemplate<OdometryPrinter> >("odom"),
+    make_shared< PrinterParamsTemplate<AltitudePrinter> >("sonar"),
   };
 
   // build all requested printer objects

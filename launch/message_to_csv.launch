@@ -1,8 +1,18 @@
 <launch>
   <node name="message_to_csv" pkg="um_ardrone" type="message_to_csv" output="screen">
-    <param name="log_imu" value="True" />
+    <param name="log_imu" value="False" />
     <param name="imu_format" value="CSV" />
     <param name="imu_topic" value="/ardrone/imu" />
     <param name="imu_print_to_outfile" value="/home/yiliny/Desktop/imu.csv" />
+
+    <param name="log_odom" value="False" />
+    <param name="odom_format" value="CSV" />
+    <param name="odom_topic" value="/ardrone/odometry" />
+    <param name="odom_print_to_outfile" value="/home/yiliny/Desktop/odometry.csv" />
+
+    <param name="log_sonar" value="True" />
+    <param name="sonar_format" value="CSV" />
+    <param name="sonar_topic" value="/ardrone/altitude" />
+    <param name="sonar_print_to_outfile" value="/home/yiliny/Desktop/sonar.csv" />
   </node>
 </launch>
