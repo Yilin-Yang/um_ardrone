@@ -1,0 +1,59 @@
+# Configuration file for the `rebroadcast` node, which reads in sensor data
+# from the ardrone_autonomy driver and rebroadcasts it after having made
+# appropriate modifications.
+
+enable_imu: true
+imu_sub_topic: ardrone/imu
+imu_pub_topic: um/imu
+imu_tf_frame: um_imu
+imu_sub_queue_size: 100
+imu_pub_queue_size: 100
+
+imu_euler_covariance: [0.000010063, -1.6428268091633E-06, -5.19680624792479E-07,
+                       -1.6428268091633E-06, 9.88479305937959E-07, -1.69482398415151E-08,
+                       -5.19680624792479E-07, -1.69482398415151E-08, 8.89204266609213E-08]
+imu_ang_vel_covariance: [5.19715885615463E-07, 1.26968109498309E-09, -0.00000001,
+                         1.26968109498309E-09, 4.60752769202246E-07, -3.37701036129199E-09,
+                         -0.00000001, -3.37701036129199E-09, 4.42592688726748E-07]
+imu_lin_acc_covariance: [0.0011098025, 1.57698548780329E-05, 6.26251781552237E-05,
+                         1.57698548780329E-05, 0.0001940326, 6.96323591429865E-05,
+                         6.26251781552237E-05, 6.96323591429865E-05, 0.0012060712]
+
+
+enable_odometry: true
+odometry_sub_topic: ardrone/odometry
+odometry_pub_topic: um/odometry
+odometry_tf_frame: um_odom
+odometry_child_tf_frame: um_base_link
+odometry_sub_queue_size: 100
+odometry_pub_queue_size: 100
+
+odometry_pose_covariance: [0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0, 0]
+
+
+odometry_twist_covariance: [3.0472406583358E-06, -1.26410175641303E-06, 0, 0, 0, 0,
+                            -1.26410175641303E-06, 3.54790757316134E-06, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0]
+
+
+enable_sonar: true
+sonar_sub_topic: ardrone/navdata
+sonar_pub_topic: um/height_sonar
+sonar_tf_frame: um_base_link
+sonar_sub_queue_size: 100
+sonar_pub_queue_size: 100
+
+sonar_pose_covariance: [0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0,
+                        0, 0, 7.88001647157E-05, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0]

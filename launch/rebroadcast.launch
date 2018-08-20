@@ -1,0 +1,5 @@
+<launch>
+  <node name="um_rebroadcast" pkg="um_ardrone" type="rebroadcast" output="screen">
+    <rosparam command="load" file="$(find um_ardrone)/params/rebroadcast.yaml" />
+  </node>
+</launch>
