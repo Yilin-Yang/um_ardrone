@@ -1,11 +1,3 @@
-# Configuration file for the `map_frame` EKF node. In addition to continuous
-# sensor/odometric data, *also* fuses global positional data (e.g.
-# landmarks, GPS, etc.)
-#
-# Shall be loaded _after_ `odom_ekf_config.yaml`; therefore, parameters set in
-# this file will override parameters set in `odom_ekf_config.yaml`.
-#
-# See `odom_ekf_config.yaml` for additional documentation on parameters.
 
 # ...The order of the values is...
 #             [x,     y,     z,
@@ -18,17 +10,24 @@
 map_frame: um_map
 world_frame: um_map
 
+# # Whether to broadcast the transformation over the /tf topic. Defaults to true
+# # if unspecified.
+publish_tf: false
+
+# # Whether to publish the acceleration state. Defaults to false if unspecified.
+publish_acceleration: false
+
 # published by [tum_ardrone] drone_stateestimation
-# odom1: um/tum_ekf  # tum_ardrone EKF output, including fused PTAM
+odom0: um/tum_ekf  # tum_ardrone EKF output, including fused PTAM
 
 # values are extracted from tum_ardrone/msg/filter_state.msg
-odom1_config: [true,  true,  true,  # absolute position
+odom0_config: [true,  true,  true,  # absolute position
                false, false, false,
                false, false, false, # ignore velocity in favor of position
                false, false, false,
                false, false, false] # doesn't report accelerations
-odom1_differential: false
-odom1_relative: true
-odom1_queue_size: 30
-# odom1_rejection_threshold: 2
-odom1_nodelay: false
+odom0_differential: false
+odom0_relative: true
+odom0_queue_size: 30
+# odom0_rejection_threshold: 2
+odom0_nodelay: false

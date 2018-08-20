@@ -1,5 +1,10 @@
 <launch>
+  <!-- rebroadcast sensor data -->
   <node name="um_rebroadcast" pkg="um_ardrone" type="rebroadcast" output="screen">
     <rosparam command="load" file="$(find um_ardrone)/params/rebroadcast.yaml" />
   </node>
+
+  <!-- broadcast transform from drone body to IMU -->
+  <node name="um_imu_tf_broadcast" pkg="tf" type="static_transform_publisher"
+    output="screen" args=" 0 0 0 0 0.1456293 -0.06971383 um_base_link um_imu 100" />
 </launch>

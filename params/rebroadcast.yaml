@@ -47,7 +47,7 @@ odometry_twist_covariance: [3.0472406583358E-06, -1.26410175641303E-06, 0, 0, 0,
 enable_sonar: true
 sonar_sub_topic: ardrone/navdata
 sonar_pub_topic: um/height_sonar
-sonar_tf_frame: um_odom
+sonar_tf_frame: um_map
 sonar_sub_queue_size: 100
 sonar_pub_queue_size: 100
 
@@ -67,9 +67,9 @@ tum_child_tf_frame: um_base_link
 tum_sub_queue_size: 100
 tum_pub_queue_size: 100
 
-tum_pose_covariance: [0.05, 0, 0, 0, 0, 0,
-                      0, 0.05, 0, 0, 0, 0,
-                      0, 0, 0.05, 0, 0, 0,
+tum_pose_covariance: [1.0E-5, 0, 0, 0, 0, 0,
+                      0, 1.0E-5, 0, 0, 0, 0,
+                      0, 0, 1.0E-5, 0, 0, 0,
                       0, 0, 0, 0.05, 0, 0,
                       0, 0, 0, 0, 0.05, 0,
                       0, 0, 0, 0, 0, 0.05]
