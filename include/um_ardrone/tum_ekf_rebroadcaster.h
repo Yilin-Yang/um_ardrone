@@ -53,6 +53,8 @@ public:
     const std::string& published_topic,
     const std::string& world_tf_frame_id,
     const std::string& local_tf_frame_id,
+    const std::array<double, 36>& pose_covar_in,
+    const std::array<double, 36>& twist_covar_in,
     size_t max_sub_queue_size = 0,
     size_t max_pub_queue_size = 0
   );
@@ -67,7 +69,7 @@ public:
   /**
    * @brief Set the pose field in the given `Odometry` message.
    */
-  static void setPose(
+  void setPose(
     const tum_ardrone::filter_state::ConstPtr& from,
     nav_msgs::Odometry::Ptr& in
   );
@@ -75,7 +77,7 @@ public:
   /**
    * @brief Set the twist field in the given `Odometry` message.
    */
-  static void setTwist(
+  void setTwist(
     const tum_ardrone::filter_state::ConstPtr& from,
     nav_msgs::Odometry::Ptr& in
   );
@@ -91,6 +93,11 @@ private:
    * @brief The `child_frame_id` in which "twist" values are reported.
    */
   std::string local_tf_frame_id;
+
+  static constexpr size_t NUM_MATRIX_CHARS = sizeof(double) * 36;
+
+  std::array<double, 36> pose_covar;
+  std::array<double, 36> twist_covar;
 
 }; // class TumEkfRebroadcaster
 

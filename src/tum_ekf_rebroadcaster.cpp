@@ -1,5 +1,7 @@
 #include "um_ardrone/tum_ekf_rebroadcaster.h"
   using boost::make_shared;
+  using std::array;
+  using std::string;
 
   using nav_msgs::Odometry;
   using geometry_msgs::Pose;
@@ -13,17 +15,19 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2/LinearMath/Quaternion.h>
 
-#include <algorithm>
-  using std::fill;
+#include <cstring>
+  using std::memcpy;
 
 namespace um_ardrone
 {
 
 TumEkfRebroadcaster::TumEkfRebroadcaster(
-  const std::string& subscribed_topic,
-  const std::string& published_topic,
-  const std::string& world_tf_frame_id_in,
-  const std::string& local_tf_frame_id_in,
+  const string& subscribed_topic,
+  const string& published_topic,
+  const string& world_tf_frame_id_in,
+  const string& local_tf_frame_id_in,
+  const array<double, 36>& pose_covar_in,
+  const array<double, 36>& twist_covar_in,
   size_t max_sub_queue_size,
   size_t max_pub_queue_size
 )
@@ -34,7 +38,9 @@ TumEkfRebroadcaster::TumEkfRebroadcaster(
     max_pub_queue_size
   ),
   world_tf_frame_id{world_tf_frame_id_in},
-  local_tf_frame_id{local_tf_frame_id_in}
+  local_tf_frame_id{local_tf_frame_id_in},
+  pose_covar{pose_covar_in},
+  twist_covar{twist_covar_in}
 {
   ROS_INFO("TumEkfRebroadcaster world_tf_frame: %s", world_tf_frame_id.c_str());
   ROS_INFO("TumEkfRebroadcaster local_tf_frame: %s", local_tf_frame_id.c_str());
@@ -48,16 +54,9 @@ void TumEkfRebroadcaster::setPose(
   const filter_state& from = *from_ptr;
 
   PoseWithCovariance& pose_with_cov = in->pose;
-
-  // tum_ardrone::filter_state does *not* include covariance values,
-  // which is unfortunate
-  fill(
-    pose_with_cov.covariance.begin(),
-    pose_with_cov.covariance.end(),
-    1.0  // TODO: configurable covariance ROS parameter
-  );
-
   Pose& pose = pose_with_cov.pose;
+
+  memcpy(pose_with_cov.covariance.data(), pose_covar.data(), NUM_MATRIX_CHARS);
 
   pose.position.x = from.x;
   pose.position.y = from.y;
@@ -83,16 +82,9 @@ void TumEkfRebroadcaster::setTwist(
   const filter_state& from = *from_ptr;
 
   TwistWithCovariance& twist_with_cov = in->twist;
-
-  // tum_ardrone::filter_state does *not* include covariance values,
-  // which is unfortunate
-  fill(
-    twist_with_cov.covariance.begin(),
-    twist_with_cov.covariance.end(),
-    1.0  // TODO: configurable covariance ROS parameter
-  );
-
   Twist& twist = twist_with_cov.twist;
+
+  memcpy(twist_with_cov.covariance.data(), twist_covar.data(), NUM_MATRIX_CHARS);
 
   twist.linear.x = from.dx;
   twist.linear.y = from.dy;
@@ -115,7 +107,6 @@ Odometry::ConstPtr TumEkfRebroadcaster::convertSubToPub(
 
   estimate_msg->header = received_ptr->header;
 
-  // TODO: make configurable
   estimate_msg->header.frame_id = world_tf_frame_id;
   estimate_msg->child_frame_id  = local_tf_frame_id;
 

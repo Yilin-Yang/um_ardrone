@@ -2,10 +2,12 @@
 #include "um_ardrone/navdata_altitude_rebroadcaster.h"
 #include "um_ardrone/imu_rebroadcaster.h"
 #include "um_ardrone/odometry_rebroadcaster.h"
+#include "um_ardrone/tum_ekf_rebroadcaster.h"
   using um_ardrone::ImuRebroadcaster;
   using um_ardrone::NavdataAltitudeRebroadcaster;
   using um_ardrone::OdometryRebroadcaster;
   using um_ardrone::Rebroadcaster;
+  using um_ardrone::TumEkfRebroadcaster;
 
 #include <array>
   using std::array;
@@ -90,7 +92,8 @@ unique_ptr<Rebroadcaster> makeImuRebroadcaster(
   );
 }
 
-unique_ptr<Rebroadcaster> makeOdometryRebroadcaster(
+template <typename T>
+unique_ptr<T> makeOdometryRebroadcaster(
   const RebroadcasterParams& params,
   ros::NodeHandle& node_handle
 )
@@ -107,8 +110,9 @@ unique_ptr<Rebroadcaster> makeOdometryRebroadcaster(
       or twist_covar.size() != COVAR_MAT_SIZE)
   {
     throw runtime_error{
-      "One or more badly sized odometry covariance matrices! "
-      "(All should have 36 elements!)"
+      string{"One or more badly sized covariance matrices for "}
+      + params.name
+      + string{" (All should have 36 elements!)"}
     };
   }
 
@@ -119,7 +123,7 @@ unique_ptr<Rebroadcaster> makeOdometryRebroadcaster(
   memcpy(pose_covar_arr.data(),  pose_covar.data(),  NUM_MATRIX_CHARS);
   memcpy(twist_covar_arr.data(), twist_covar.data(), NUM_MATRIX_CHARS);
 
-  return make_unique<OdometryRebroadcaster>(
+  return make_unique<T>(
     params.sub_topic,
     params.pub_topic,
     params.tf_frame,
@@ -172,6 +176,7 @@ int main(int argc, char** argv)
     RebroadcasterParams("imu"),
     RebroadcasterParams("odometry"),
     RebroadcasterParams("sonar"),
+    RebroadcasterParams("tum"),
   };
 
   vector<unique_ptr<Rebroadcaster>> rebroadcasters;
@@ -190,13 +195,21 @@ int main(int argc, char** argv)
     {
       rebroadcasters.emplace_back(makeImuRebroadcaster(r, node_handle));
     }
-    if (r.name == "odometry")
+    else if (r.name == "odometry")
     {
-      rebroadcasters.emplace_back(makeOdometryRebroadcaster(r, node_handle));
+      rebroadcasters.emplace_back(
+        makeOdometryRebroadcaster<OdometryRebroadcaster>(r, node_handle)
+      );
     }
-    if (r.name == "sonar")
+    else if (r.name == "sonar")
     {
       rebroadcasters.emplace_back(makeSonarRebroadcaster(r, node_handle));
+    }
+    else if (r.name == "tum")
+    {
+      rebroadcasters.emplace_back(
+        makeOdometryRebroadcaster<TumEkfRebroadcaster>(r, node_handle)
+      );
     }
   }
 
