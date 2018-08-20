@@ -13,7 +13,7 @@
 # one message from one of the inputs. It will then run continuously at the
 # frequency specified here, regardless of whether it receives more
 # measurements. Defaults to 30 if unspecified.
-frequency: 3
+frequency: 10
 
 # The period, in seconds, after which we consider a sensor to have timed out.
 # In this event, we carry out a predict cycle on the EKF without correcting it.
@@ -217,7 +217,7 @@ pose0_config: [false, false, true,   # literally only altitude
               false, false, false,
               false, false, false,
               false, false, false]
-pose0_differential: true  # when this isn't true, the state estimate climbs to God
+pose0_differential: false
 pose0_relative: false  # '0' from the altimeter means we're landed; don't override that
 pose0_queue_size: 200  # assume publish rate of ~100Hz
 # pose0_pose_rejection_threshold: 2  # altimeter sometimes erroneously reports height of 0m

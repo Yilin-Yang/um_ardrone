@@ -19,17 +19,16 @@ map_frame: um_map
 world_frame: um_map
 
 # published by [tum_ardrone] drone_stateestimation
-# TODO: rebroadcast predictedPose as geometry_msgs/PoseWithCovarianceStamped
-odom1: um/tum_ekf  # tum_ardrone EKF output, including fused PTAM
+# odom1: um/tum_ekf  # tum_ardrone EKF output, including fused PTAM
 
-# NOTE: values are extracted from tum_ardrone/msg/filter_state.msg
+# values are extracted from tum_ardrone/msg/filter_state.msg
 odom1_config: [true,  true,  true,  # absolute position
-               true,  true,  true,  # absolute orientation
-               true,  true,  true,  # velocities
-               false, false, true,  # only reports yaw-dot
+               false, false, false,
+               false, false, false, # ignore velocity in favor of position
+               false, false, false,
                false, false, false] # doesn't report accelerations
-odom1_differential: true
-odom1_relative: false
-odom1_queue_size: 2
-odom1_rejection_threshold: 2
+odom1_differential: false
+odom1_relative: true
+odom1_queue_size: 30
+# odom1_rejection_threshold: 2
 odom1_nodelay: false
