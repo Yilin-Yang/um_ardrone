@@ -146,8 +146,8 @@ world_frame: um_odom           # Defaults to the value of odom_frame if unspecif
 #              vroll, vpitch,vyaw,
 #              ax,    ay,    az]
 
-# AR.Drone IMU
-imu0: ardrone/imu        # AR.Drone's built-in IMU
+# Modified output, originally from AR.Drone's built-in IMU
+imu0: um/imu
 imu0_config:  [false, false, false,  # no absolute pos
                true,  true,  true,   # use absolute orientation (from accelerometer)
                false, false, false,  # no linear velocity
