@@ -50,7 +50,7 @@ static inline geometry_msgs::Vector3
   tf2::Matrix3x3 mat{quat};
 
   tf2Scalar roll, pitch, yaw;
-  mat.getRPY(yaw, pitch, roll);
+  mat.getRPY(roll, pitch, yaw);
 
   geometry_msgs::Vector3 to_return;
   to_return.x = roll;
