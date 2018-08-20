@@ -1,0 +1,8 @@
+<launch>
+  <node name="imu_print" pkg="um_ardrone" type="message_to_csv" output="screen">
+    <param name="log_imu" value="True" />
+    <param name="imu_format" value="HUMAN_READABLE" />
+    <param name="imu_topic" value="/um/imu" />
+    <param name="imu_print_to_outfile" value="stderr" />
+  </node>
+</launch>

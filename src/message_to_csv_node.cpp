@@ -97,8 +97,10 @@ struct PrinterParamsTemplate : public PrinterParams
       };
     }
     outfile_ptr = make_unique<ofstream>(outfile.c_str());
+    // TODO: documentation
+    auto& outstream = (outfile == "stderr") ? std::cerr : *outfile_ptr;
     return make_unique<PrinterType>(
-      *outfile_ptr,
+      outstream,
       MessagePrinter::outputFormatFromString(format),
       topic
     );
