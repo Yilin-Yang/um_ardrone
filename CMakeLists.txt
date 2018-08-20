@@ -135,6 +135,7 @@ add_subdirectory(src)
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME} src/um_ardrone_node.cpp)
 add_executable(message_to_csv  src/message_to_csv_node.cpp)
+add_executable(rebroadcast     src/rebroadcast_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -153,6 +154,11 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_link_libraries(message_to_csv
+  lib${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(rebroadcast
   lib${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
