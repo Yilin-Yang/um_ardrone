@@ -89,13 +89,11 @@ void ImuRebroadcaster::rotateOrientationFrame(Imu::Ptr imu_msg)
   tf2::Quaternion quat;
   tf2::fromMsg(imu_msg->orientation, quat);
 
-  static const tf2::Quaternion ROTATION(
-    tf2::Vector3{0, 0, 1},
-    -M_PI / 2
-  );
-
-  // TODO: quaternion rotations evaluated left-to-right?
-  quat *= ROTATION;
+  tf2::Matrix3x3 m{quat};
+  double r, p, y;
+  m.getRPY(r, p, y);
+  m.setRPY(r, p, y + M_PI / 2);
+  m.getRotation(quat); // put new rotation in quat
 
   imu_msg->orientation = tf2::toMsg(quat);
 }
