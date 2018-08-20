@@ -57,16 +57,16 @@ public:
    *
    *    Note that ROS orientation covariance matrices correspond to Euler
    *    angles.
-   * @param tf_frame_id       The `tf` frame ID to be written to the rebroadcast
+   * @param tf_frame_id       The `tf` frame ID to be written to the outgoing
    *                          messages' headers.
    * @param euler_rpy_covar   Orientation covariance matrix for world-fixed RPY,
-   *                          to be written to rebroadcast messages.
+   *                          to be written to outgoing messages.
    * @param ang_vel_covar     Angular velocity covariance matrix, to be written
-   *                          to rebroadcast messages.
+   *                          to outgoing messages.
    * @param lin_acc_covar     Linear acceleration covariance matrix, to be
-   *                          written to rebroadcast messages.
+   *                          written to outgoing messages.
    * @param acceleration_rescale  Multiply linear acceleration vectors by this
-   *                          value in the rebroadcast messages. To be used
+   *                          value in the outgoing messages. To be used
    *                          when the acceleration vector does not have a
    *                          magnitude of 9.81m/s^2 while at rest.
    */

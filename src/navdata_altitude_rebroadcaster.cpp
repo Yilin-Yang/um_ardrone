@@ -1,16 +1,20 @@
 #include "um_ardrone/navdata_altitude_rebroadcaster.h"
-  using boost::make_shared;
-
   using ardrone_autonomy::Navdata;
   using geometry_msgs::PoseWithCovarianceStamped;
+  using boost::make_shared;
+  using std::string;
+
+#include <cstring>
+  using std::memcpy;
 
 namespace um_ardrone
 {
 
 NavdataAltitudeRebroadcaster::NavdataAltitudeRebroadcaster(
-  const std::string& subscribed_topic,
-  const std::string& published_topic,
-  const std::string& tf_frame_id_in,
+  const string& subscribed_topic,
+  const string& published_topic,
+  const string& tf_frame_id_in,
+  const std::array<double, 36>& pose_covar_in,
   size_t max_sub_queue_size,
   size_t max_pub_queue_size
 )
@@ -23,6 +27,7 @@ NavdataAltitudeRebroadcaster::NavdataAltitudeRebroadcaster(
   tf_frame_id{tf_frame_id_in}
 {
   ROS_INFO("NavdataAltitudeRebroadcaster tf_frame: %s", tf_frame_id.c_str());
+  memcpy(pose_covar.data(), pose_covar_in.data(), NUM_MATRIX_CHARS);
 }
 
 PoseWithCovarianceStamped::ConstPtr NavdataAltitudeRebroadcaster::convertSubToPub(
@@ -42,16 +47,20 @@ PoseWithCovarianceStamped::ConstPtr NavdataAltitudeRebroadcaster::convertSubToPu
 
   // `altd` is given in mm
   // (message specification appears to have a typo)
+  altitude_pose_point.x = 0;
+  altitude_pose_point.y = 0;
   altitude_pose_point.z = static_cast<double>(received.altd) / 1000.0;
-  altitude_msg->pose.covariance =
-    boost::array<double, 36>{
-      1, 0, 0, 0, 0, 0,
-      0, 1, 0, 0, 0, 0,
-      0, 0, 1, 0, 0, 0,
-      0, 0, 0, 1, 0, 0,
-      0, 0, 0, 0, 1, 0,
-      0, 0, 0, 0, 0, 1,
-    };
+
+  altitude_pose_orientation.w = 1;
+  altitude_pose_orientation.x = 0;
+  altitude_pose_orientation.y = 0;
+  altitude_pose_orientation.z = 0;
+
+  memcpy(
+    altitude_msg->pose.covariance.data(),
+    pose_covar.data(),
+    NUM_MATRIX_CHARS
+  );
 
   return altitude_msg;
 }

@@ -23,12 +23,12 @@
 #ifndef UM_ARDRONE_NAVDATA_ALTITUDE_REBROADCASTER_H
 #define UM_ARDRONE_NAVDATA_ALTITUDE_REBROADCASTER_H
 
-#include <ros/ros.h>
+#include "templated_rebroadcaster.h"
 
 #include <ardrone_autonomy/Navdata.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 
-#include "templated_rebroadcaster.h"
+#include <array>
 
 namespace um_ardrone
 {
@@ -37,6 +37,7 @@ namespace um_ardrone
  * @brief Extract SONAR from `Navdata`, republish as `PoseWithCovarianceStamped`.
  * @author Yilin Yang (yiliny@umich.edu)
  * @details See @ref TemplatedRebroadcaster for details on function parameters.
+ *      Only rebroadcasts the z-position reported by the SONAR.
  */
 class NavdataAltitudeRebroadcaster
 : public TemplatedRebroadcaster<
@@ -48,10 +49,20 @@ public:
 
   NavdataAltitudeRebroadcaster() = default;
 
+  /**
+   * @brief Construct a SONAR altimeter rebroadcaster.
+   * @details Covariance matrices are row-major, with the zero-indexed element
+   *    corresponding to the top-left element in the 6x6 matrix.
+   * @param tf_frame_id       The `tf` frame ID to be written to the outgoing
+   *                          messages' headers.
+   * @param pose_covar        Pose covariance matrix to be written to outgoing
+   *                          messages.
+   */
   explicit NavdataAltitudeRebroadcaster(
     const std::string& subscribed_topic,
     const std::string& published_topic,
     const std::string& tf_frame_id,
+    const std::array<double, 36>& pose_covar,
     size_t max_sub_queue_size = 0,
     size_t max_pub_queue_size = 0
   );
@@ -71,6 +82,10 @@ private:
    * @brief The `tf` frame in which altitude measurements are to be reported.
    */
   std::string tf_frame_id;
+
+  static constexpr size_t NUM_MATRIX_CHARS = sizeof(double) * 36;
+
+  boost::array<double, 36> pose_covar;
 
 }; // class NavdataAltitudeRebroadcaster
 
