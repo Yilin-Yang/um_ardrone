@@ -52,7 +52,9 @@ void ImuRebroadcaster::receiveMessage(
   rotateOrientationFrame(new_imu);
 
   // rebroadcast message
-  TemplatedRebroadcaster::receiveMessage(imu_msg);
+  TemplatedRebroadcaster::receiveMessage(
+    ros::MessageEvent<const Imu>(new_imu)
+  );
 }
 
 void ImuRebroadcaster::setTfFrame(Imu::Ptr imu_msg)

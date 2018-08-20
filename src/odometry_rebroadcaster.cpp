@@ -1,4 +1,5 @@
 #include "um_ardrone/odometry_rebroadcaster.h"
+  using nav_msgs::Odometry;
   using std::array;
   using std::string;
 
@@ -31,13 +32,32 @@ OdometryRebroadcaster::OdometryRebroadcaster(
   memcpy(twist_covar.data(), twist_covar_in.data(), NUM_MATRIX_CHARS);
 }
 
-void OdometryRebroadcaster::setTfFrames(nav_msgs::Odometry::Ptr msg)
+void OdometryRebroadcaster::receiveMessage(
+  const ros::MessageEvent<const Odometry>& odom_msg
+)
+{
+  // copy construct message
+  Odometry::Ptr new_odom = boost::make_shared<Odometry>(
+    *( odom_msg.getMessage() )
+  );
+
+  // modify message
+  setTfFrames(new_odom);
+  setCovarianceMatrices(new_odom);
+
+  // rebroadcast message
+  TemplatedRebroadcaster::receiveMessage(
+    ros::MessageEvent<const Odometry>(new_odom)
+  );
+}
+
+void OdometryRebroadcaster::setTfFrames(Odometry::Ptr msg)
 {
   msg->header.frame_id = tf_frame_id;
   msg->child_frame_id = child_tf_frame_id;
 }
 
-void OdometryRebroadcaster::setCovarianceMatrices(nav_msgs::Odometry::Ptr msg)
+void OdometryRebroadcaster::setCovarianceMatrices(Odometry::Ptr msg)
 {
   boost::array<double, 36>& msg_pose_cov  = msg->pose.covariance;
   boost::array<double, 36>& msg_twist_cov = msg->twist.covariance;

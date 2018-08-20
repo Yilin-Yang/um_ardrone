@@ -168,13 +168,15 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "um_rebroadcast");
   ros::NodeHandle node_handle{"~"};
 
-  vector<RebroadcasterParams> rebroadcasters{
+  vector<RebroadcasterParams> rebroadcaster_params{
     RebroadcasterParams("imu"),
     RebroadcasterParams("odometry"),
     RebroadcasterParams("sonar"),
   };
 
-  for (auto& r : rebroadcasters)
+  vector<unique_ptr<Rebroadcaster>> rebroadcasters;
+
+  for (auto& r : rebroadcaster_params)
   {
     node_handle.getParam(r.paramEnable(), r.should_rebroadcast);
     if (not r.should_rebroadcast) continue;
@@ -183,7 +185,28 @@ int main(int argc, char** argv)
     node_handle.getParam(r.paramTfFrame(),      r.tf_frame);
     node_handle.getParam(r.paramSubQueueSize(), r.max_sub_queue_size);
     node_handle.getParam(r.paramPubQueueSize(), r.max_pub_queue_size);
+
+    if (r.name == "imu")
+    {
+      rebroadcasters.emplace_back(makeImuRebroadcaster(r, node_handle));
+    }
+    if (r.name == "odometry")
+    {
+      rebroadcasters.emplace_back(makeOdometryRebroadcaster(r, node_handle));
+    }
+    if (r.name == "sonar")
+    {
+      rebroadcasters.emplace_back(makeSonarRebroadcaster(r, node_handle));
+    }
   }
+
+  if (rebroadcasters.empty())
+  {
+    ROS_ERROR("ERROR: No rebroadcaster objects initialized! Exiting.");
+    return 1;
+  }
+
+  ros::spin();
 
   ROS_INFO("Initializing um_rebroadcast node.");
   ROS_INFO("Loading parameters...");

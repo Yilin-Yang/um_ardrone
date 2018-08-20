@@ -70,8 +70,17 @@ public:
     size_t max_pub_queue_size = 0
   );
 
+  virtual void receiveMessage(const ros::MessageEvent<const nav_msgs::Odometry>&);
+
+  /**
+   * @{
+   * @brief Make necessary alterations to inbound messages before rebroadcasting.
+   */
   void setTfFrames(nav_msgs::Odometry::Ptr);
   void setCovarianceMatrices(nav_msgs::Odometry::Ptr);
+  /**
+   * @}
+   */
 
 private:
 
