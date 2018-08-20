@@ -36,3 +36,4 @@ build/*
 compile_commands.json
 cmake/*
 *.log
+*.vim
